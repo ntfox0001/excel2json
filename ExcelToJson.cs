@@ -171,7 +171,7 @@ namespace excel2json
                 }
                 if (allSheet)
                 {
-                    if (ws.Name == "")
+                    if (ws.Name == "Sheet1")
                     {
                         // 如果第一个表格没有名字，那么就取第一个表格
                         exceljd = sheetjd;
