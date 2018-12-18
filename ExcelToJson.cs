@@ -24,7 +24,7 @@ namespace excel2json
                 Excel.Worksheet ws = (Excel.Worksheet)wb.Sheets[i + 1];
                 if (ws.Name == "备注") continue;
                 bool repeatId = false;
-
+                bool keyValuePair = false;
                 try
                 {
                     string idFormat = ws.Cells[1, 1].value.ToString();
@@ -35,6 +35,10 @@ namespace excel2json
                     else if (idFormat == "[repeatid]")
                     {
                         repeatId = true;
+                    }
+                    else if (idFormat == "[keyvaluepair]")
+                    {
+                        keyValuePair = true;
                     }
                     else
                     {
@@ -58,96 +62,126 @@ namespace excel2json
                 {
                     Console.WriteLine("Start process row: {0}", j);
                     LitJson.JsonData rowjd = new LitJson.JsonData();
-                    for (int k = 1; k <= ws.UsedRange.Columns.Count; k++)
+                    string kvp_k = "", kvp_v = "";
+                    if (keyValuePair)
                     {
-                        string dataType = "s";
-                        if (needDataType)
+                        try
                         {
-                            if (k == 1)
+                            
+                            if (ws.Cells[j, 1].value != null)
                             {
-                                dataType = "i";
+                                kvp_k = ws.Cells[j, 1].value.ToString();
                             }
-                            else
+                            if (ws.Cells[j, 2].value != null)
                             {
-                                if (ws.Cells[1, k].value != null)
+                                kvp_v = ws.Cells[j, 2].value.ToString();
+                            }
+                            
+                        }
+                        catch (System.Exception e)
+                        {
+                            Console.WriteLine("error in {0} sheet: row:{1}, {2}", ws.Name, j, e.Message);
+                            wb.Close();
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        
+                        for (int k = 1; k <= ws.UsedRange.Columns.Count; k++)
+                        {
+                            string dataType = "s";
+                            if (needDataType)
+                            {
+                                if (k == 1)
                                 {
-                                    if (ws.Cells[1, k].value != "")
+                                    dataType = "i";
+                                }
+                                else
+                                {
+                                    if (ws.Cells[1, k].value != null)
                                     {
-                                        dataType = ws.Cells[1, k].value;
+                                        if (ws.Cells[1, k].value != "")
+                                        {
+                                            dataType = ws.Cells[1, k].value;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        string ks, vs;
-                        try
-                        {
-                            if (ws.Cells[3, k].value == null)
+                            string ks, vs;
+                            try
+                            {
+                                if (ws.Cells[3, k].value == null)
+                                {
+                                    // 标题是空的，那么忽略这列
+                                    continue;
+                                }
+                                ks = ws.Cells[3, k].value.ToString();
+                            }
+                            catch (System.Exception e)
+                            {
+                                Console.WriteLine("error in {0} sheet: (row: {1}, col: {2}), {3}", ws.Name, 3, k, e.Message);
+                                wb.Close();
+                                return false;
+                            }
+                            if (ks == "")
                             {
                                 // 标题是空的，那么忽略这列
                                 continue;
                             }
-                            ks = ws.Cells[3, k].value.ToString();
-                        }
-                        catch (System.Exception e)
-                        {
-                            Console.WriteLine("error in {0} sheet: (row: {1}, col: {2}), {3}", ws.Name, 3, k, e.Message);
-                            wb.Close();
-                            return false;
-                        }
-                        if (ks == "")
-                        {
-                            // 标题是空的，那么忽略这列
-                            continue;
-                        }
-                        try
-                        {
-                            vs = "";
-                            if (ws.Cells[j, k].value != null)
-                            {
-                                vs = ws.Cells[j, k].value.ToString();
-                            }
-                        }
-                        catch (System.Exception e)
-                        {
-                            Console.WriteLine("error in {0} sheet: (row:{1}, col: {2}), {3}", ws.Name, j, k, e.Message);
-                            wb.Close();
-                            return false;
-                        }
-                        if (needDataType)
-                        {
                             try
                             {
-                                if (dataType == "i")
+                                vs = "";
+                                if (ws.Cells[j, k].value != null)
                                 {
-                                    rowjd[ks] = int.Parse(vs);
-                                }
-                                else if (dataType == "f")
-                                {
-                                    rowjd[ks] = float.Parse(vs);
-                                }
-                                else
-                                {
-                                    rowjd[ks] = vs;
+                                    vs = ws.Cells[j, k].value.ToString();
                                 }
                             }
                             catch (System.Exception e)
                             {
-                                Console.WriteLine("dataType error in {0} sheet: (row:{1}, col: {2}), {3}", ws.Name, j, k, e.Message);
+                                Console.WriteLine("error in {0} sheet: (row:{1}, col: {2}), {3}", ws.Name, j, k, e.Message);
                                 wb.Close();
                                 return false;
                             }
+                            if (needDataType)
+                            {
+                                try
+                                {
+                                    if (dataType == "i")
+                                    {
+                                        rowjd[ks] = int.Parse(vs);
+                                    }
+                                    else if (dataType == "f")
+                                    {
+                                        rowjd[ks] = float.Parse(vs);
+                                    }
+                                    else
+                                    {
+                                        rowjd[ks] = vs;
+                                    }
+                                }
+                                catch (System.Exception e)
+                                {
+                                    Console.WriteLine("dataType error in {0} sheet: (row:{1}, col: {2}), {3}", ws.Name, j, k, e.Message);
+                                    wb.Close();
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                rowjd[ks] = vs;
+                            }
                         }
-                        else
-                        {
-                            rowjd[ks] = vs;
-                        }
-
-
                     }
+
                     try
                     {
                         string key = ws.Cells[j, 1].value.ToString();
-                        if (repeatId)
+                        if (keyValuePair)
+                        {
+                            sheetjd[kvp_k] = kvp_v;
+                        }
+                        else if (repeatId)
                         {
                             if (!sheetjd.Keys.Contains(key))
                             {

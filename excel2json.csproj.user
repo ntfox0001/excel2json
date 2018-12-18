@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>PlayerExtent.json</StartArguments>
-    <StartWorkingDirectory>G:\gamefox_new2\Server\Win32\Binaries\</StartWorkingDirectory>
+    <StartArguments>..\..\IndieNiNi\Assets\Tables\ allSheet needDataType</StartArguments>
+    <StartWorkingDirectory>D:\work\Design\Tables\</StartWorkingDirectory>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup>
@@ -16,7 +16,7 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <StartArguments>PlayerExtent.json</StartArguments>
-    <StartWorkingDirectory>G:\gamefox_new2\Server\Win32\Binaries\</StartWorkingDirectory>
+    <StartArguments>..\..\IndieNiNi\Assets\Tables\ allSheet needDataType</StartArguments>
+    <StartWorkingDirectory>D:\work\Design\Tables\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>
