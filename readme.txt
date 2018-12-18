@@ -16,11 +16,15 @@ excel格式
 第一行，标记用
 
 A1：
+        [keyvaluepair] 表示表格为key-value对
+                格式：{sheet:{key1:value1,key2:value2}}
 	[uniqueid] 表示当前表使用唯一id
 		格式：{sheet:{key:{line}}}
 	[repeatid] 表示当前表使用可重复id
 		格式：{sheet:{key:[{line1}, {line2}]}}
-	
+
+如果表名是默认Sheet1，那么这个excel文件只导出第一个sheet
+
 第一列数据格式只能是数字，其他列的格式可以在第一行标记出来
 	空字符串或者s 表示本列是字符串类型
 	f 表示本列是浮点类型
