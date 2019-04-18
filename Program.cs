@@ -17,7 +17,7 @@ namespace excel2json
 
             string targetPath;
             string srcPath = "";
-            string settingFile = System.IO.Directory.GetCurrentDirectory() + "\\columnSetting.xml";
+            string settingFile = Directory.GetCurrentDirectory() + "\\columnSetting.xml";
             bool allSheet = true;
             bool needDataType = true;
             if (args.Length == 1)
@@ -54,19 +54,19 @@ namespace excel2json
 
             bool needPressKey = true;
 
-            if (System.IO.File.Exists(targetPath))
+            if (File.Exists(targetPath))
             {
-                if (System.IO.Path.GetExtension(targetPath) == ".json")
+                if (Path.GetExtension(targetPath) == ".json")
                 {
-                    Console.WriteLine("                     --------  {0} turn to csv --------", System.IO.Path.GetFileNameWithoutExtension(targetPath));
-                    string targetFilename = System.IO.Path.GetFileNameWithoutExtension(targetPath) + ".csv";
+                    Console.WriteLine("                     --------  {0} turn to csv --------", Path.GetFileNameWithoutExtension(targetPath));
+                    string targetFilename = Path.GetFileNameWithoutExtension(targetPath) + ".csv";
                     JsonToCsv.Process(targetPath, targetFilename, settingFile);
                     needPressKey = false;
                 }
                 else
                 {
-                    Console.WriteLine("                     --------  {0} turn to json --------", System.IO.Path.GetFileNameWithoutExtension(targetPath));
-                    string targetFilename = System.IO.Path.GetFileNameWithoutExtension(targetPath) + ".json";
+                    Console.WriteLine("                     --------  {0} turn to json --------", Path.GetFileNameWithoutExtension(targetPath));
+                    string targetFilename = Path.GetFileNameWithoutExtension(targetPath) + ".json";
                     needPressKey = !ExcelToJson.Process(app, targetPath, targetFilename, allSheet, needDataType);
 
                 }
@@ -75,21 +75,21 @@ namespace excel2json
             {
                 if (srcPath == "")
                 {
-                    srcPath = System.IO.Directory.GetCurrentDirectory() + "\\";
+                    srcPath = Directory.GetCurrentDirectory() + "\\";
                 }
                 
-                string[] srcfiles = System.IO.Directory.GetFiles(srcPath, "*.xlsx");
+                string[] srcfiles = Directory.GetFiles(srcPath, "*.xlsx");
 
                 for (int i = 0; i < srcfiles.Length; i++)
                 {
                     string srcFilename = srcfiles[i];
-                    string prename = System.IO.Path.GetFileNameWithoutExtension(srcFilename).Substring(0, 2);
+                    string prename = Path.GetFileNameWithoutExtension(srcFilename).Substring(0, 2);
                     if (prename == "~$")
                     {
                         continue;
                     }
-                    Console.WriteLine("                     --------  {0} --------", System.IO.Path.GetFileNameWithoutExtension(srcFilename));
-                    string targetFilename = targetPath + System.IO.Path.GetFileNameWithoutExtension(srcFilename) + ".json";
+                    Console.WriteLine("                     --------  {0} --------", Path.GetFileNameWithoutExtension(srcFilename));
+                    string targetFilename = targetPath + Path.GetFileNameWithoutExtension(srcFilename) + ".json";
                     bool rt = ExcelToJson.Process(app, srcFilename, targetFilename, allSheet, needDataType);
                     needPressKey = rt && needPressKey;
                 }
@@ -139,35 +139,35 @@ namespace excel2json
                         return;
                     }
             }
-            srcPath = System.IO.Path.GetFullPath(srcPath);
-            destPath = System.IO.Path.GetFullPath(destPath);
-            if (System.IO.File.Exists(srcPath))
+            srcPath = Path.GetFullPath(srcPath);
+            destPath = Path.GetFullPath(destPath);
+            if (File.Exists(srcPath))
             {
-                if (System.IO.File.Exists(destPath))
+                if (Path.GetExtension(destPath) == ".json")
                 {
                     needPressKey = !ExcelToJson.Process(app, srcPath, destPath, allSheet, needDataType);
                 }
                 else
                 {
-                    destPath = System.IO.Path.Combine(destPath, System.IO.Path.GetFileName(srcPath));
+                    destPath = Path.Combine(destPath, Path.GetFileName(srcPath));
                     needPressKey = !ExcelToJson.Process(app, srcPath, destPath, allSheet, needDataType);
                 }
             }
             else
             {
-                if (System.IO.Directory.Exists(srcPath) && System.IO.Directory.Exists(destPath))
+                if (Directory.Exists(srcPath) && Directory.Exists(destPath))
                 {
-                    string[] srcfiles = System.IO.Directory.GetFiles(srcPath, "*.xlsx");
+                    string[] srcfiles = Directory.GetFiles(srcPath, "*.xlsx");
                     for (int i = 0; i < srcfiles.Length; i++)
                     {
                         string srcFilename = srcfiles[i];
-                        string prename = System.IO.Path.GetFileNameWithoutExtension(srcFilename).Substring(0, 2);
+                        string prename = Path.GetFileNameWithoutExtension(srcFilename).Substring(0, 2);
                         if (prename == "~$")
                         {
                             continue;
                         }
-                        Console.WriteLine("                     --------  {0} --------", System.IO.Path.GetFileNameWithoutExtension(srcFilename));
-                        string targetFilename = destPath + System.IO.Path.GetFileNameWithoutExtension(srcFilename) + ".json";
+                        Console.WriteLine("                     --------  {0} --------", Path.GetFileNameWithoutExtension(srcFilename));
+                        string targetFilename = destPath + Path.GetFileNameWithoutExtension(srcFilename) + ".json";
                         bool rt = ExcelToJson.Process(app, srcFilename, targetFilename, allSheet, needDataType);
                         needPressKey = rt && needPressKey;
                     }
@@ -185,7 +185,7 @@ namespace excel2json
 
         static string GetFileAndDirectory(string path)
         {
-            if (System.IO.Directory.Exists(Path.GetDirectoryName(path)) || System.IO.File.Exists(path))
+            if (Directory.Exists(Path.GetDirectoryName(path)) || File.Exists(path))
             {
                 return path;
             }
