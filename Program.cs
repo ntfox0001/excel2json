@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 
 
@@ -184,7 +185,7 @@ namespace excel2json
 
         static string GetFileAndDirectory(string path)
         {
-            if (System.IO.Directory.Exists(path) || System.IO.File.Exists(path))
+            if (System.IO.Directory.Exists(Path.GetDirectoryName(path)) || System.IO.File.Exists(path))
             {
                 return path;
             }
