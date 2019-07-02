@@ -25,18 +25,19 @@ namespace excel2json
                 if (ws.Name == "备注") continue;
                 bool repeatId = false;
                 bool keyValuePair = false;
+                string templateIdType = "i";
                 try
                 {
                     string idFormat = ws.Cells[1, 1].value.ToString();
-                    if (idFormat == "[uniqueid]")
+                    if (idFormat.Contains("[uniqueid]"))
                     {
                         repeatId = false;
                     }
-                    else if (idFormat == "[repeatid]")
+                    else if (idFormat.Contains("[repeatid]"))
                     {
                         repeatId = true;
                     }
-                    else if (idFormat == "[keyvaluepair]")
+                    else if (idFormat.Contains("[keyvaluepair]"))
                     {
                         keyValuePair = true;
                     }
@@ -45,6 +46,11 @@ namespace excel2json
                         Console.WriteLine("unknow id format sign:{0}", idFormat);
                         wb.Close();
                         return false;
+                    }
+
+                    if (idFormat.Contains("[s]"))
+                    {
+                        templateIdType = "s";
                     }
                     Console.WriteLine("sheet id is: {0}", idFormat);
                 }
@@ -95,7 +101,7 @@ namespace excel2json
                             {
                                 if (k == 1)
                                 {
-                                    dataType = "i";
+                                    dataType = templateIdType;
                                 }
                                 else
                                 {
