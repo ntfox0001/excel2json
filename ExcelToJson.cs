@@ -155,11 +155,11 @@ namespace excel2json
                                 {
                                     if (dataType == "i")
                                     {
-                                        rowjd[ks] = int.Parse(vs);
+                                        rowjd[ks] = long.Parse(vs);
                                     }
                                     else if (dataType == "f")
                                     {
-                                        rowjd[ks] = float.Parse(vs);
+                                        rowjd[ks] = double.Parse(vs);
                                     }
                                     else
                                     {
